@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <audio id="notification-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3"
+        preload="auto"></audio>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div id="app">
+        <!-- Login View -->
+        <div id="login-view" class="view active">
+            <div class="glass-pane login-box">
+                <div>
+                    <i class="fa-solid fa-headset" style="font-size: 3rem; color: #5865F2; margin-bottom: 15px;"></i>
+                    <h1>BotCare Panel</h1>
+                    <p>Professional ticket management system.</p>
+                </div>
+                <button class="btn" onclick="app.login()">
+                    <i class="fa-brands fa-discord"></i> Login with Discord
+                </button>
+            </div>
+        </div>
+
+        <!-- Bot Selection View -->
+        <div id="bots-view" class="view selection-view">
+            <header class="header">
+                <div class="header-brand"><i class="fa-solid fa-headset" style="color: var(--brand-primary)"></i>
+                    BotCare Panel</div>
+                <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
+                    <!-- Social Links -->
+                    <a href="https://discord.gg/cMZvgths59" target="_blank" class="btn btn-outline"
+                        style="border:none; padding: 8px; font-size: 1.2rem; color: #5865F2;" title="Join Discord"><i
+                            class="fa-brands fa-discord"></i></a>
+                    <a href="https://www.youtube.com/channel/UCzNQg0MVuJ31xTx6pbJbbJA" target="_blank"
+                        class="btn btn-outline" style="border:none; padding: 8px; font-size: 1.2rem; color: #FF0000;"
+                        title="YouTube Channel"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://github.com/Owline-an" target="_blank" class="btn btn-outline"
+                        style="border:none; padding: 8px; font-size: 1.2rem; color: var(--text-primary);"
+                        title="GitHub Repository"><i class="fa-brands fa-github"></i></a>
+
+                    <button class="btn btn-outline" onclick="app.logout()"><i
+                            class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+            <div class="container">
+                <h2 class="page-title">Select Bot</h2>
+                <div class="grid" id="bots-grid">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Servers View -->
+        <div id="servers-view" class="view selection-view">
+            <header class="header">
+                <div class="header-brand">
+                    <button class="btn btn-outline" style="padding: 6px 12px; margin-right: 15px;"
+                        onclick="app.showView('bots-view')">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    Owline Select Server
+                </div>
+                <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
+                    <a href="https://discord.com" target="_blank" class="btn btn-outline"
+                        style="border:none; padding: 8px; font-size: 1.2rem; color: #5865F2;" title="Join Discord"><i
+                            class="fa-brands fa-discord"></i></a>
+                    <a href="https://youtube.com" target="_blank" class="btn btn-outline"
+                        style="border:none; padding: 8px; font-size: 1.2rem; color: #FF0000;" title="YouTube Channel"><i
+                            class="fa-brands fa-youtube"></i></a>
+                    <a href="https://github.com" target="_blank" class="btn btn-outline"
+                        style="border:none; padding: 8px; font-size: 1.2rem; color: var(--text-primary);"
+                        title="GitHub Repository"><i class="fa-brands fa-github"></i></a>
+
+                    <button class="btn btn-outline"
+                        style="border-color: var(--brand-primary); color: var(--brand-primary);"
+                        onclick="app.inviteBot()">
+                        <i class="fa-solid fa-plus"></i> Invite Bot
+                    </button>
+                    <span class="badge" style="display: flex; align-items: center; gap: 5px;">
+                        <span class="status-dot online"></span> API Online
+                    </span>
+                </div>
+            </header>
+            <div class="container">
+                <h2 class="page-title"><i class="fa-solid fa-robot"
+                        style="color: var(--brand-primary); margin-right: 10px;"></i> <span
+                        id="current-bot-name">BotName</span> Servers</h2>
+                <div class="grid" id="servers-grid">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat / Tickets View -->
+        <div id="chat-view" class="view">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <button class="btn btn-outline"
+                        style="padding: 6px; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center;"
+                        onclick="app.showView('servers-view')">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div style="font-weight: 600; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;"
+                        id="current-server-name">Support Server</div>
+                    <div style="width: 32px;"></div> <!-- Spacer -->
+                </div>
+                <div style="display: flex; border-bottom: 1px solid var(--border-color);">
+                    <div class="tab active" id="tab-tickets" onclick="app.setTab('tickets')"
+                        style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:600; border-bottom: 2px solid var(--brand-primary); transition: all 0.2s;">
+                        Tickets</div>
+                    <div class="tab" id="tab-members" onclick="app.setTab('members')"
+                        style="flex:1; text-align:center; padding: 12px; cursor:pointer; font-weight:600; border-bottom: 2px solid transparent; color: var(--text-secondary); transition: all 0.2s;">
+                        Members</div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="sidebar-search" placeholder="Search..."
+                        oninput="app.handleSearch()">
+                    <i class="fa-solid fa-search search-icon"></i>
+                </div>
+                <div class="ticket-list" id="ticket-list">
+                    <!-- Dynamic rendering -->
+                </div>
+                <div class="ticket-list" id="member-list" style="display:none;">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+
+            <div class="chat-area">
+                <div class="chat-empty" id="chat-empty">
+                    <i class="fa-regular fa-comments"></i>
+                    <h3>Select a ticket to start messaging</h3>
+                </div>
+
+                <div id="chat-active" style="display: none; flex: 1; min-height: 0; flex-direction: column;">
+                    <header class="chat-header">
+                        <div class="user-identity">
+                            <div class="card-icon" style="width: 40px; height: 40px;" id="chat-user-avatar"><i
+                                    class="fa-solid fa-user"></i></div>
+                            <div>
+                                <div style="font-weight: 600;" id="chat-username">Username</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);" id="chat-discord-id">ID:
+                                    00000000</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-outline" onclick="app.toggleSettings()"
+                                style="border-color: var(--text-secondary); color: var(--text-secondary); padding: 8px;"
+                                title="Open Settings">
+                                <i class="fa-solid fa-gear"></i>
+                            </button>
+                            <button class="btn btn-outline" title="Sync old messages from Discord"
+                                style="border-color: #3BA55C; color: #3BA55C; padding: 8px;"
+                                onclick="app.fetchHistory()">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </button>
+                            <button class="btn btn-outline" title="Leave/Delete Server"
+                                style="border-color: var(--danger); color: var(--danger); padding: 8px;"
+                                onclick="app.leaveServer()">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </button>
+                            <button class="btn btn-outline" title="Move Ticket"
+                                style="border-color: #5865F2; color: #5865F2; padding: 8px;" onclick="app.moveTicket()">
+                                <i class="fa-solid fa-arrows-up-down-left-right"></i>
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="messages-container" id="messages-container"
+                        style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; min-height: 0;">
+                        <!-- Dynamic rendering -->
+                    </div>
+
+                    <footer class="chat-input-area"
+                        style="flex-shrink: 0; padding: 15px; border-top: 1px solid var(--border-color);">
+                        <div class="input-wrapper" style="align-items: center;">
+                            <label style="cursor:pointer; color: var(--text-secondary); padding: 5px;">
+                                <i class="fa-solid fa-paperclip"></i>
+                                <input type="file" id="chat-file-input" style="display: none;"
+                                    onchange="app.handleFileSelect(event)">
+                            </label>
+
+                            <button class="btn btn-outline" id="btn-record-voice" onclick="app.toggleVoiceRecord()"
+                                style="border: none; padding: 5px; color: var(--text-secondary);"
+                                title="Record Voice Message">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+
+                            <textarea class="chat-input" id="chat-input-box" placeholder="Type your message here..."
+                                rows="1"
+                                onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); app.sendMessage(); }"></textarea>
+                            <button class="btn-send" onclick="app.sendMessage()">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div id="file-preview-area"
+                            style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px; display:none;">
+                            Attached: <span id="file-preview-name"></span>
+                            <i class="fa-solid fa-times"
+                                style="cursor:pointer; margin-left: 10px; color: var(--danger);"
+                                onclick="app.clearFile()"></i>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div class="card" style="width: 350px; background: rgba(19,23,32,0.95); backdrop-filter: blur(10px);">
+            <div class="card-header" style="justify-content: space-between;">
+                <h3><i class="fa-solid fa-gear"></i> Settings</h3>
+                <i class="fa-solid fa-times" style="cursor:pointer; color:var(--text-secondary);"
+                    onclick="app.toggleSettings()"></i>
+            </div>
+            <div style="padding: 20px; display:flex; flex-direction:column; gap:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:600;"><i class="fa-solid fa-music"></i> Audio Notifications</span>
+                    <button id="modal-sound-btn" class="btn btn-outline" style="border-color:#f1c40f; color:#f1c40f;"
+                        onclick="app.toggleSound()"><i class="fa-solid fa-bell"></i> On</button>
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:10px; font-weight:600;"><i
+                            class="fa-solid fa-volume-high"></i> Alert Volume</label>
+                    <input type="range" id="modal-volume-slider" min="0" max="1" step="0.1" value="0.5"
+                        onchange="app.setVolume(this.value)" style="width:100%; cursor:pointer;">
+                </div>
+                <button class="btn btn-primary" onclick="app.testSound()"
+                    style="padding: 10px; display:flex; justify-content:center; align-items:center; gap:10px;"><i
+                        class="fa-solid fa-play"></i> Test Sound</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
