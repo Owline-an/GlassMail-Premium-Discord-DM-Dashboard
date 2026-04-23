@@ -380,3 +380,52 @@ Your support helps improve the project.
 # 👨‍💻 Developed With Passion
 
 **Professional Discord Management Made Simple**
+
+---
+
+## 📜 License
+
+This project is licensed under the:
+
+# Creative Commons Attribution-NonCommercial 4.0  
+(CC BY-NC 4.0)
+
+![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)
+
+---
+
+### ✅ You Are Allowed To
+
+- Use this project for personal purposes
+- Modify the source code
+- Fork and improve the project
+- Share improvements with the community
+- Use it in non-commercial environments
+
+---
+
+### ❌ You Are NOT Allowed To
+
+- Sell this software
+- Use it in commercial services
+- Host paid SaaS versions
+- Integrate it into paid platforms
+- Redistribute it as a paid product
+
+---
+
+### 📎 Full License
+
+See the full license in:
+
+
+Or visit:
+
+https://creativecommons.org/licenses/by-nc/4.0/
+
+---
+
+© 2026 Owline — Non-Commercial Use Only
+![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)
+![Non Commercial](https://img.shields.io/badge/Commercial%20Use-Prohibited-red)
+![Maintained](https://img.shields.io/badge/Maintained-Yes-blue)
