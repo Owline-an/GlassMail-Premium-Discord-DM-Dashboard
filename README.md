@@ -1,3 +1,4 @@
+![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)
 # 🚀 Discord DM Ticket Dashboard
 
 ### Professional Discord DM Management & Ticketing Platform
